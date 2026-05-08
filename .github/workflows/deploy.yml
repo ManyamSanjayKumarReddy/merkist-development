@@ -34,7 +34,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: ${{ secrets.EC2_PORT }}
           script: |
-            cd /opt/igstore
+            cd /opt/merkist-development
             git pull 
             docker compose pull
             docker compose down
