@@ -1,0 +1,24 @@
+[project]
+name = "igstore"
+version = "0.1.0"
+description = "Instagram Media Management API"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.136.0",
+    "uvicorn>=0.44.0",
+    "httpx>=0.28.1",
+    "bcrypt>=5.0.0",
+    "email-validator>=2.3.0",
+    "pydantic-settings>=2.14.0",
+    "python-dotenv>=1.2.2",
+    "python-jose[cryptography]>=3.5.0",
+    "aerich==0.7.2",
+    "tortoise-orm==0.21.3",
+    "asyncpg>=0.29.0",
+]
+
+[tool.aerich]
+tortoise_orm = "app.database.TORTOISE_ORM"
+location = "./migrations"
+src_folder = "./."
