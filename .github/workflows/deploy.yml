@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - dev
+      - prod
 
 jobs:
   deploy:
@@ -29,14 +29,16 @@ jobs:
       - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@v1
         with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.EC2_PORT }}
           script: |
             cd /opt/igstore
-            git pull origin dev
+            git pull 
             docker compose pull
-            docker compose up -d
+            docker compose down
+            docker compose up --build -d
             sleep 10
             docker compose exec -T api aerich upgrade
-            docker compose logs --tail=20 api
+            docker image prune -f
