@@ -34,11 +34,9 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: ${{ secrets.EC2_PORT }}
           script: |
-            git config --global --add safe.directory /opt/merkist-development
             cd /opt/merkist-development
-            git pull 
             docker compose pull
             docker compose up -d
-            sleep 10
-            docker compose exec -T api aerich upgrade
+            until docker compose exec -T api python -c "import app" 2>/dev/null; do sleep 2; done
+            docker compose exec -T api aerich upgrade || true
             docker image prune -f
