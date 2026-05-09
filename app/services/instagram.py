@@ -11,8 +11,8 @@ INSTAGRAM_TOKEN_URL = "https://api.instagram.com/oauth/access_token"
 INSTAGRAM_LONG_LIVED_TOKEN_URL = "https://graph.instagram.com/access_token"
 INSTAGRAM_GRAPH_URL = "https://graph.instagram.com/v21.0"
 
-SCOPES = "instagram_business_basic,instagram_manage_comments,instagram_business_manage_messages"
-
+# SCOPES = "instagram_business_basic,instagram_manage_comments,instagram_business_manage_messages"
+SCOPES = "instagram_business_basic"
 
 def build_oauth_url(state: str) -> str:
     """Build the Instagram OAuth consent screen URL."""
