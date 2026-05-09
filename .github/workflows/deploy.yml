@@ -38,7 +38,7 @@ jobs:
             cd /opt/merkist-development
             git pull 
             docker compose pull
-            docker compose up --build -d
+            docker compose up -d
             sleep 10
             docker compose exec -T api aerich upgrade
             docker image prune -f
