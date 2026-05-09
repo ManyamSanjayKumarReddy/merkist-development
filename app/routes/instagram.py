@@ -40,6 +40,7 @@ async def get_instagram_oauth_url(
     state = secrets.token_urlsafe(32)
     _oauth_states[state] = current_user.id
     url = build_oauth_url(state=state)
+    print(url)
     return OAuthURLResponse(url=url)
 
 
