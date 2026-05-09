@@ -15,9 +15,7 @@ jobs:
 
       - name: Deploy
         run: |
-          cp -r $GITHUB_WORKSPACE/. /opt/merkist-development/
-          cd /opt/merkist-development
-          docker compose up --build -d
-          until docker compose exec -T api python -c "import app" 2>/dev/null; do sleep 2; done
-          docker compose exec -T api aerich upgrade || true
+          docker compose -f $GITHUB_WORKSPACE/docker-compose.yml --env-file /opt/merkist-development/.env up --build -d
+          until docker compose -f $GITHUB_WORKSPACE/docker-compose.yml --env-file /opt/merkist-development/.env exec -T api python -c "import app" 2>/dev/null; do sleep 2; done
+          docker compose -f $GITHUB_WORKSPACE/docker-compose.yml --env-file /opt/merkist-development/.env exec -T api aerich upgrade || true
           docker image prune -f
