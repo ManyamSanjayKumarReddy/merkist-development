@@ -1,6 +1,6 @@
 services:
   api:
-    image: ${DOCKERHUB_USERNAME}/igstore-api:latest
+    build: .
     env_file:
       - .env
     depends_on:
