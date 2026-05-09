@@ -19,5 +19,5 @@ jobs:
           cd /opt/merkist-development
           docker compose up --build -d
           until docker compose exec -T api python -c "import app" 2>/dev/null; do sleep 2; done
-          docker compose exec -T api aerich upgrade || true
+          docker compose exec -T api .venv/bin/aerich upgrade || true
           docker image prune -f
