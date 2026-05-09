@@ -11,3 +11,5 @@ wheels/
 .env
 uv.lock
 .idea
+backend-zipped.zip
+backend-zipped

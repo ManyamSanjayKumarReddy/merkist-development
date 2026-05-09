@@ -32,6 +32,10 @@ def create_app() -> FastAPI:
     from app.routes.users import router as users_router
     app.include_router(users_router, prefix="/users", tags=["Users"])
 
+    from app.routes.instagram import auth_router as ig_auth_router, router as ig_router
+    app.include_router(ig_auth_router, prefix="/auth/instagram", tags=["Instagram OAuth"])
+    app.include_router(ig_router, prefix="/instagram", tags=["Instagram"])
+
     @app.get("/", tags=["Health"])
     async def root():
         return {"status": "ok", "message": "IGStore API is up and running"}

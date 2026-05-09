@@ -6,6 +6,8 @@ class IGAccount(Model):
     user = fields.ForeignKeyField("models.User", related_name="ig_accounts")
     instagram_user_id = fields.CharField(max_length=100, unique=True)
     username = fields.CharField(max_length=150)
+    profile_picture_url = fields.TextField(null=True)
+    followers_count = fields.IntField(null=True)
     access_token = fields.TextField()
     token_expires_at = fields.DatetimeField(null=True)
     is_active = fields.BooleanField(default=True)

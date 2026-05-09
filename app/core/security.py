@@ -36,7 +36,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
 def decode_access_token(token: str) -> Optional[dict]:
     try:
         payload = jwt.decode(token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM])
-        user_id: int = payload.get("sub")
+        user_id = payload.get("sub")
         role: str = payload.get("role")
         if user_id is None:
             return None
@@ -50,4 +50,4 @@ def create_refresh_token() -> str:
 
 
 def is_refresh_token_expired(expires_at: datetime) -> bool:
-    return datetime.now(timezone.utc) > expires_at.replace(tzinfo=timezone.utc)
+    return datetime.now(timezone.utc) > expires_at.astimezone(timezone.utc)
