@@ -39,6 +39,6 @@ jobs:
             git pull 
             docker compose pull
             docker compose up -d
-            sleep 10
+            sleep 9
             docker compose exec -T api aerich upgrade
             docker image prune -f
