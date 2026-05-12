@@ -23,7 +23,7 @@ async def fetch_conversations(access_token: str, after: Optional[str] = None) ->
     if after:
         params["after"] = after
 
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.get(f"{INSTAGRAM_GRAPH_URL}/me/conversations", params=params)
 
     import logging
