@@ -13,6 +13,7 @@ TORTOISE_ORM = {
                 "app.models.user",
                 "app.models.refresh_tokens",
                 "app.models.instagram",
+                "app.models.dm",
             ],
             "default_connection": "default",
         },

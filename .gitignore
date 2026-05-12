@@ -12,3 +12,7 @@ wheels/
 .idea
 backend-zipped.zip
 backend-zipped
+
+__pycache__/
+*.pyc
+.venv/

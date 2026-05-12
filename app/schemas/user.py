@@ -46,10 +46,21 @@ class UserResponse(BaseModel):
     name: str
     username: str
     email: str
-    phone_number: str
     role: Optional[str] = None
     is_active: bool
     created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class UserStatusResponse(BaseModel):
+    id: int
+    username: str
+    email: str
+    is_active: bool
+    role: str
+    member_since: datetime
 
     class Config:
         from_attributes = True

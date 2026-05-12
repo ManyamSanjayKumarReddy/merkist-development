@@ -11,4 +11,4 @@ COPY . .
 
 EXPOSE 5005
 
-CMD [".venv/bin/uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "5005"]
+CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "5005"]
