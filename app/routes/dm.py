@@ -32,17 +32,18 @@ async def _get_account_or_404(account_id: int, user: User) -> IGAccount:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Instagram account not found")
     return account
 
-
 @router.post("/{account_id}/conversations/sync", response_model=SyncResponse)
 async def sync_conversations(
     account_id: int,
     current_user: User = Depends(get_current_active_user),
 ):
-    """Pull latest conversations from Instagram API and upsert into DB."""
     account = await _get_account_or_404(account_id, current_user)
 
+    # First sync: use account created_at. Subsequent: use last_synced_at
+    since = account.last_synced_at or account.created_at
+
     try:
-        data = await fetch_conversations(account.access_token)
+        data = await fetch_conversations(account.access_token, since=since)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_502_BAD_GATEWAY, detail=str(e))
 
@@ -54,7 +55,6 @@ async def sync_conversations(
         if not ig_conv_id:
             continue
 
-        # Extract participant who is NOT the business account
         participants = conv.get("participants", {}).get("data", [])
         contact = next(
             (p for p in participants if str(p.get("id")) != account.instagram_user_id),
@@ -64,26 +64,13 @@ async def sync_conversations(
         participant_ig_id = contact.get("id") if contact else None
         participant_username = contact.get("username") if contact else None
 
-        # If username not in participants, try fetching it
         if participant_ig_id and not participant_username:
             info = await fetch_ig_user_info(account.access_token, participant_ig_id)
             participant_username = info.get("username") or info.get("name")
 
-        # Determine last message preview
-        messages_data = conv.get("messages", {}).get("data", [])
-        last_msg = messages_data[0] if messages_data else None
-        last_message_preview = (last_msg.get("message", "")[:255] if last_msg else None)
         last_message_at = None
-        if last_msg and last_msg.get("created_time"):
-            try:
-                last_message_at = datetime.fromisoformat(
-                    last_msg["created_time"].replace("Z", "+00:00")
-                )
-            except Exception:
-                pass
-
         updated_time = conv.get("updated_time")
-        if not last_message_at and updated_time:
+        if updated_time:
             try:
                 last_message_at = datetime.fromisoformat(updated_time.replace("Z", "+00:00"))
             except Exception:
@@ -94,7 +81,6 @@ async def sync_conversations(
             existing.participant_username = participant_username or existing.participant_username
             existing.participant_ig_id = participant_ig_id or existing.participant_ig_id
             existing.last_message_at = last_message_at or existing.last_message_at
-            existing.last_message_preview = last_message_preview or existing.last_message_preview
             await existing.save()
         else:
             await IGConversation.create(
@@ -103,9 +89,12 @@ async def sync_conversations(
                 participant_username=participant_username,
                 participant_ig_id=participant_ig_id,
                 last_message_at=last_message_at,
-                last_message_preview=last_message_preview,
             )
             synced += 1
+
+    # Update last synced timestamp
+    account.last_synced_at = datetime.now(timezone.utc)
+    await account.save()
 
     return SyncResponse(synced=synced, message=f"Synced {synced} new conversations, {len(conversations) - synced} updated")
 

@@ -13,6 +13,7 @@ class IGAccount(Model):
     is_active = fields.BooleanField(default=True)
     created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)
+    last_synced_at = fields.DatetimeField(null=True)
 
     class Meta:
         table = "ig_accounts"

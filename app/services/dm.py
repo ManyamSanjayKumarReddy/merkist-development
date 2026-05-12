@@ -8,18 +8,15 @@ settings = get_settings()
 
 INSTAGRAM_GRAPH_URL = "https://graph.instagram.com/v21.0"
 
-
-async def fetch_conversations(access_token: str, after: Optional[str] = None) -> dict:
-    """
-    Fetch DM conversations for the connected IG Business account.
-    Returns paginated list of conversation objects.
-    """
+async def fetch_conversations(access_token: str, since: Optional[datetime] = None, after: Optional[str] = None) -> dict:
     params = {
         "platform": "instagram",
-        "fields": "id,participants,updated_time,messages{id,message,from,created_time}",
+        "fields": "id,participants,updated_time",
         "access_token": access_token,
         "limit": 20,
     }
+    if since:
+        params["since"] = int(since.timestamp())
     if after:
         params["after"] = after
 
