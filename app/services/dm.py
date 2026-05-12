@@ -26,6 +26,9 @@ async def fetch_conversations(access_token: str, after: Optional[str] = None) ->
     async with httpx.AsyncClient() as client:
         response = await client.get(f"{INSTAGRAM_GRAPH_URL}/me/conversations", params=params)
 
+    import logging
+    logging.getLogger("uvicorn.error").info(f"IG conversations raw: status={response.status_code} body={response.text}")
+
     if response.status_code != 200:
         raise ValueError(f"Fetch conversations failed: {response.text}")
 
