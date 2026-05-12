@@ -11,7 +11,7 @@ class SenderType(str, Enum):
 class IGConversation(Model):
     id = fields.IntField(pk=True)
     account = fields.ForeignKeyField("models.IGAccount", related_name="conversations")
-    ig_conversation_id = fields.CharField(max_length=100, unique=True)
+    ig_conversation_id = fields.CharField(max_length=255, unique=True)
     participant_username = fields.CharField(max_length=150, null=True)
     participant_ig_id = fields.CharField(max_length=100, null=True)
     last_message_at = fields.DatetimeField(null=True)
@@ -28,9 +28,9 @@ class IGConversation(Model):
 class IGMessage(Model):
     id = fields.IntField(pk=True)
     conversation = fields.ForeignKeyField("models.IGConversation", related_name="messages")
-    ig_message_id = fields.CharField(max_length=100, unique=True)
+    ig_message_id = fields.CharField(max_length=255, unique=True)
     sender_type = fields.CharEnumField(SenderType)
-    sender_ig_id = fields.CharField(max_length=100, null=True)
+    sender_ig_id = fields.CharField(max_length=255, null=True)
     text = fields.TextField(null=True)
     timestamp = fields.DatetimeField(null=True)
     is_read = fields.BooleanField(default=False)
