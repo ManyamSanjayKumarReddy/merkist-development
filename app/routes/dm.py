@@ -57,7 +57,7 @@ async def sync_conversations(
 
         participants = conv.get("participants", {}).get("data", [])
         contact = next(
-            (p for p in participants if str(p.get("id")) != account.instagram_user_id),
+            (p for p in participants if p.get("id") != account.instagram_user_id),
             None,
         )
 
